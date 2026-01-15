@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Personal Site</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Roboto:wght@400;700&display=swap');
+
+        :root{
+            --color-primary:#0f1419;
+            --color-secondary:#536471;
+            --color-accent:#0369a1;
+            --color-bg-main:#ffffff;
+            --color-bg-card:#ffffff;
+            --color-bg-subtle:#f7fafc;
+            --color-border:#eff3f4;
+            --card-radius:8px;
+            --font-main:'Inter',sans-serif;
+        }
+
+        body{
+            font-family:var(--font-main);
+            background-color:var(--color-bg-main);
+            color:var(--color-primary);
+            line-height:1.5;
+            -webkit-font-smoothing:antialiased;
+            -moz-osx-font-smoothing:grayscale;
+            background-size:cover;
+            background-position:center;
+            background-repeat:no-repeat;
+            background-attachment:fixed;
+        }
+        .container-max{max-width:1120px;margin:0 auto;}
+        .nav-item{position:relative;font-weight:600;color:var(--color-secondary);padding:16px 0;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.1em;text-decoration:none;display:inline-block;}
+        .nav-item:hover{color:var(--color-primary);}
+        .nav-item.active{font-weight:800;color:var(--color-primary);}
+        .nav-item.active::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:3px;background-color:var(--color-primary);border-radius:2px;}
+
+        .sidebar-card{border:1px solid var(--color-border);padding:1rem;background:var(--color-bg-card);margin-bottom:0.75rem;border-radius:var(--card-radius);}
+        .feed-card{border:1px solid var(--color-border);padding:1.25rem;background:var(--color-bg-card);border-radius:var(--card-radius);margin-bottom:1rem;cursor:pointer;transition:transform 0.1s ease,border-color 0.1s ease;}
+        .feed-card:hover{transform:translateY(-2px);border-color:var(--color-secondary);}
+        
+        .aspect-box{aspect-ratio:1/1;object-fit:cover;width:100%;border-radius:6px;}
+        .sticky-nav {
+            position: static;
+            top: 0;
+            z-index: 50;
+            /* Change background from transparent to a solid color */
+            background-color: transparent; 
+            margin-bottom: 2rem;
+            /* Add padding so content doesn't touch the very top of the screen */
+            padding-top: 0.5rem; 
+        }
+        .standalone-view{max-width:900px;margin:2rem auto;padding:1.25rem;background:var(--color-bg-card);border:1px solid var(--color-border);border-radius:var(--card-radius);}
+        .badge{font-size:13px;font-weight:700;padding:6px 12px;border-radius:6px;text-transform:uppercase;letter-spacing:0.03em;display:inline-block;}
+        .content-container{border:1px solid var(--color-border);padding:2rem;background:var(--color-bg-subtle);border-radius:var(--card-radius);margin-bottom:2rem;}
+        
+        .prose h1{font-size:2.25rem;font-weight:800;margin-bottom:1.5rem;letter-spacing:-0.025em;color:var(--color-primary);}
+        .prose h2{font-size:1.75rem;font-weight:700;margin-top:2rem;margin-bottom:1rem;color:var(--color-primary);}
+        .prose h3{font-size:1.5rem;font-weight:600;margin-top:1.5rem;margin-bottom:0.75rem;color:var(--color-primary);}
+        .prose p{margin-bottom:1.25rem;color:var(--color-secondary);}
+        .prose a{color:var(--color-accent);text-decoration:underline;}
+        .prose ul,.prose ol{margin-bottom:1.25rem;padding-left:1.5rem;color:var(--color-secondary);}
+        .prose li{margin-bottom:0.5rem;}
+        .prose code{background:rgba(0,0,0,0.05);padding:2px 6px;border-radius:3px;font-size:0.9em;color:var(--color-primary);}
+        .prose pre{background:rgba(0,0,0,0.05);padding:1rem;border-radius:4px;overflow-x:auto;margin-bottom:1.25rem;}
+
+        .search-input{display:block;width:100%;padding:12px 16px;border:1px solid var(--color-border);border-radius:8px;font-size:14px;background:var(--color-bg-card);color:var(--color-primary);box-shadow:0 1px 2px rgba(0,0,0,0.05);}
+        .search-input:focus{outline:2px solid var(--color-accent);outline-offset:-1px;}
+        .search-input::placeholder{color:var(--color-secondary);opacity:0.6;}
+        
+        .author-row{display:flex;gap:12px;align-items:center;margin-bottom:18px;}
+        .author-row img{width:56px;height:56px;border-radius:999px;object-fit:cover;}
+        .author-meta{display:flex;flex-direction:column;}
+        .author-name{font-weight:800;font-size:1rem;color:var(--color-primary);}
+        .author-status{font-size:0.875rem;color:var(--color-secondary);}
+
+        .bio-section{color:var(--color-secondary);}
+        .detail-link{color:var(--color-secondary);text-decoration:none;transition:color 0.15s ease;}
+        .detail-link:hover{color:var(--color-accent);}
+        .recent-posts-label{color:var(--color-secondary);}
+        .no-content-msg{color:var(--color-secondary);}
+        .gallery-placeholder{color:var(--color-secondary);}
+        .blog-card-excerpt{color:var(--color-secondary);}
+        .gallery-caption{color:var(--color-secondary);}
+        .back-link{color:var(--color-secondary);}
+        .back-link:hover{color:var(--color-primary);}
+
+        .pagination{display:flex;gap:8px;justify-content:center;margin-top:2rem;}
+        .page-btn{padding:8px 14px;border:1px solid var(--color-border);background:var(--color-bg-card);color:var(--color-secondary);border-radius:6px;cursor:pointer;font-weight:600;font-size:14px;transition:all 0.15s ease;}
+        .page-btn:hover{border-color:var(--color-accent);color:var(--color-accent);}
+        .page-btn.active{background:var(--color-primary);color:white;border-color:var(--color-primary);}
+        .page-btn:disabled{opacity:0.4;cursor:not-allowed;}
+        .page-btn:disabled:hover{border-color:var(--color-border);color:var(--color-secondary);}
+    </style>
+</head>
+<body class="antialiased">
+    <div id="main-layout">
+        <div class="w-full h-48 md:h-60 bg-transparent">
+            <img id="ui-banner" src="" class="w-full h-full object-cover" style="display:none;">
+        </div>
+
+        <div class="container-max px-6">
+            <header class="relative pb-6">
+                <div class="flex flex-col md:flex-row gap-8 items-end">
+                    <div class="relative -mt-12 md:-mt-16">
+                        <div id="ui-avatar-container" class="w-32 h-32 md:w-40 md:h-40 rounded-none border-white bg-transparent overflow-hidden">
+                            <img id="ui-avatar" src="" class="w-full h-full object-cover" style="display:none;">
+                        </div>
+                    </div>
+
+                    <div class="flex-1 pb-1 flex flex-col gap-4 w-full">
+                        <div>
+                            <h1 id="ui-name" class="text-4xl font-extrabold tracking-tighter"></h1>
+                            <p id="ui-status" class="bio-section font-medium italic mt-1"></p>
+                        </div>
+                        <div id="ui-badges" class="flex flex-wrap gap-2"></div>
+                    </div>
+                </div>
+
+                <div class="mt-8 flex flex-col gap-4 bio-section">
+                    <p id="ui-bio" class="text-[16px] leading-relaxed max-w-3xl font-medium"></p>
+                    <div id="ui-details" class="text-[14px] leading-relaxed max-w-3xl flex flex-wrap gap-x-3 gap-y-1"></div>
+                </div>
+            </header>
+
+            <div class="flex flex-col md:flex-row gap-12">
+                <aside class="w-full md:w-[280px] shrink-0 pt-8">
+                    <div id="interest-container"></div>
+                </aside>
+
+                <main class="flex-1">
+                    <nav class="sticky-nav">
+                        <div id="nav-container" class="flex gap-10"></div>
+                    </nav>
+                    <div id="app-content"></div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <div id="standalone-container" class="hidden standalone-view"></div>
+
+    <script>
+    const FALLBACK_PROFILE={name:"Lorem Ipsum",status:"Dolor sit amet",bio:"A short bio goes here.",details:["Lorem ipsum","Developer","Designer"],avatar:'content/avatar.jpg',banner:'content/banner.jpg',background:'content/bg.jpg',theme:{primary:'#0f1419',secondary:'#536471',accent:'#0369a1',bgMain:'#ffffff',bgCard:'#ffffff',bgSubtle:'#f7fafc',border:'#eff3f4',font:"'Inter', sans-serif"},badges:[{label:'Creative',bg:'#dbeafe',text:'#1e40af'}],sidebarCards:[{title:'Interests',content:'Lorem ipsum',bg:'#f1f5f9',text:'#1e293b',border:'#e2e8f0'}],blogPosts:[],tabs:[]};
+    const SITE_DATA={profile:FALLBACK_PROFILE,homepage:'',blog:[],gallery:[],tabs:[]};
+    const ITEMS_PER_PAGE={blog:10,gallery:12};
+    let currentPage={blog:1,gallery:1};
+
+    async function tryFetchJson(paths){for(const p of paths){try{const r=await fetch(p);if(r.ok)return await r.json();}catch(e){}}return null;}
+    async function loadImageIfExists(path){try{const r=await fetch(path);if(r.ok)return path;}catch(e){}return null;}
+    async function loadMarkdown(path){try{const r=await fetch(path);if(!r.ok)return null;return await r.text();}catch(e){return null;}}
+
+    function applyTheme(theme){
+        const root=document.documentElement;
+        if(theme.primary)root.style.setProperty('--color-primary',theme.primary);
+        if(theme.secondary)root.style.setProperty('--color-secondary',theme.secondary);
+        if(theme.accent)root.style.setProperty('--color-accent',theme.accent);
+        if(theme.bgMain)root.style.setProperty('--color-bg-main',theme.bgMain);
+        if(theme.bgCard)root.style.setProperty('--color-bg-card',theme.bgCard);
+        if(theme.bgSubtle)root.style.setProperty('--color-bg-subtle',theme.bgSubtle);
+        if(theme.border)root.style.setProperty('--color-border',theme.border);
+        if(theme.font)root.style.setProperty('--font-main',theme.font);
+    }
+
+    async function loadProfileJson(){
+        const json=await tryFetchJson(['content/profile.json','profile.json']);
+        if(json)SITE_DATA.profile={...FALLBACK_PROFILE,...json};
+    }
+
+    function prettifyTabId(id){
+        let s=id.split('-').join(' ');
+        return s.split(' ').filter(Boolean).map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' ');
+    }
+
+    function parseGalleryMarkdown(md){
+        if(!md)return[];
+        const lines=md.split('\n').map(l=>l.trim()).filter(Boolean);
+        const arr=[];
+        lines.forEach((line,idx)=>{
+            if(line.startsWith('#'))return;
+            const parts=line.split('|').map(p=>p.trim());
+            if(parts[0])arr.push({id:`img-${idx}`,url:parts[0],caption:parts[1]||''});
+        });
+        return arr;
+    }
+
+    async function loadAllContent(){
+        await loadProfileJson();
+        const p=SITE_DATA.profile;
+        if(p.theme)applyTheme(p.theme);
+
+        const avatar=p.avatar?await loadImageIfExists(p.avatar):null;
+        const banner=p.banner?await loadImageIfExists(p.banner):null;
+        const bg=p.background?await loadImageIfExists(p.background):null;
+        
+        if(avatar){document.getElementById('ui-avatar').src=avatar;document.getElementById('ui-avatar').style.display='block';}
+        if(banner){document.getElementById('ui-banner').src=banner;document.getElementById('ui-banner').style.display='block';}
+        if(bg){document.body.style.backgroundImage=`url('${bg}')`;}
+
+        SITE_DATA.homepage=await loadMarkdown(p.homepageFile||'content/homepage.md')||'';
+
+        const blogPosts=p.blogPosts||[];
+        const blogPromises=blogPosts.map(async(filepath)=>{
+            const md=await loadMarkdown(filepath);
+            if(!md)return null;
+            const lines=md.split('\n');
+            let title=filepath.split('/').pop().replace('.md','');
+            for(const ln of lines){if(ln.trim().startsWith('# ')){title=ln.trim().slice(2);break;}}
+            return{id:filepath.split('/').pop().replace('.md',''),title,content:md};
+        });
+        SITE_DATA.blog=(await Promise.all(blogPromises)).filter(x=>x!==null);
+        SITE_DATA.gallery=parseGalleryMarkdown(await loadMarkdown(p.galleryFile||'content/gallery.md'));
+
+        const tabs=[];
+        if(Array.isArray(p.tabs)){
+            for(const t of p.tabs){
+                if(!t||!t.id)continue;
+                const filepath=t.file||`content/tabs/${t.id}.md`;
+                const md=await loadMarkdown(filepath);
+                if(md)tabs.push({id:t.id,label:t.label||prettifyTabId(t.id),content:md});
+            }
+        }
+        for(let i=1;i<=10;i++){
+            const id=`tab-${i}`;
+            if(tabs.find(x=>x.id===id))continue;
+            const md=await loadMarkdown(`content/tabs/${id}.md`);
+            if(md)tabs.push({id,label:prettifyTabId(id),content:md});
+        }
+        SITE_DATA.tabs=tabs;
+    }
+
+    window.onload=async()=>{await loadAllContent();render();};
+
+    function render(){
+        const params=new URLSearchParams(window.location.search);
+        const page=params.get('page')||'home';
+        const postId=params.get('id');
+        const view=params.get('view');
+        const pageNum=parseInt(params.get('p'))||1;
+        if(page==='blog')currentPage.blog=pageNum;
+        if(page==='gallery')currentPage.gallery=pageNum;
+        if(view==='standalone'&&postId){showStandalone(postId);return;}
+        showMainLayout(page);
+    }
+
+    function renderDetails(details){
+        if(!details)return'';
+        if(typeof details==='string')return escapeHtml(details);
+        if(!Array.isArray(details))return'';
+        return details.map((item,idx)=>{
+            if(typeof item==='string')return`<span>${escapeHtml(item)}</span>`;
+            if(item.text&&item.url)return`<a href="${escapeHtml(item.url)}" class="detail-link" target="_blank" rel="noopener noreferrer">${escapeHtml(item.text)}</a>`;
+            if(item.text)return`<span>${escapeHtml(item.text)}</span>`;
+            return'';
+        }).filter(Boolean).join('<span class="opacity-40"></span>');
+    }
+
+    function showMainLayout(page){
+        document.getElementById('main-layout').classList.remove('hidden');
+        document.getElementById('standalone-container').classList.add('hidden');
+
+        const p=SITE_DATA.profile;
+        document.getElementById('ui-name').textContent=p.name;
+        document.getElementById('ui-status').textContent=p.status||'';
+        document.getElementById('ui-bio').textContent=p.bio||'';
+        document.getElementById('ui-details').innerHTML=renderDetails(p.details);
+
+        document.getElementById('ui-badges').innerHTML=(p.badges||[]).map(b=>`<span class="badge" style="background:${b.bg};color:${b.text}">${b.label}</span>`).join('');
+        document.getElementById('interest-container').innerHTML=(p.sidebarCards||[]).map(c=>`
+            <div class="sidebar-card" style="background:${c.bg};border-color:${c.border};color:${c.text}">
+                <h4 class="text-[9px] font-black uppercase tracking-[0.2em] mb-1.5 opacity-60">${c.title}</h4>
+                <p class="text-[14px] font-bold">${c.content}</p>
+            </div>
+        `).join('');
+
+        const sections=[
+            {id:'home',label:'Home',show:true},
+            {id:'blog',label:'Blog',show:SITE_DATA.blog.length>0},
+            {id:'gallery',label:'Gallery',show:SITE_DATA.gallery.length>0}
+        ];
+        SITE_DATA.tabs.forEach(t=>sections.push({id:t.id,label:t.label,show:true}));
+
+        document.getElementById('nav-container').innerHTML=sections.filter(s=>s.show).map(s=>`
+            <a href="?page=${s.id}" class="nav-item ${page===s.id?'active':''}" onclick="event.preventDefault();window.history.pushState({},'',this.href);render();">${s.label}</a>
+        `).join('');
+
+        const contentEl=document.getElementById('app-content');
+        if(page==='blog')contentEl.innerHTML=renderBlogsHtml();
+        else if(page==='gallery')contentEl.innerHTML=renderGallery();
+        else if(page==='home')contentEl.innerHTML=renderHome();
+        else{
+            const tab=SITE_DATA.tabs.find(t=>t.id===page);
+            if(tab)contentEl.innerHTML=renderTabHtml(tab);
+            else contentEl.innerHTML='<p class="no-content-msg text-center py-20">Page not found.</p>';
+        }
+
+        if(page==='blog')attachBlogSearch();
+        if(page==='gallery')attachGalleryPagination();
+    }
+
+    function attachBlogSearch(){
+        const searchInput=document.getElementById('blog-search');
+        if(searchInput){
+            searchInput.addEventListener('input',(e)=>{
+                const query=e.target.value.toLowerCase();
+                const list=SITE_DATA.blog.slice();
+                const filtered=query?list.filter(b=>(b.title||'').toLowerCase().includes(query)):list;
+                const feed=document.getElementById('blog-feed');
+                if(feed){
+                    if(filtered.length>0){
+                        const perPage=ITEMS_PER_PAGE.blog;
+                        const total=Math.ceil(filtered.length/perPage);
+                        const curr=currentPage.blog>total?1:currentPage.blog;
+                        const start=(curr-1)*perPage;
+                        const items=filtered.slice(start,start+perPage);
+                        feed.innerHTML=items.map(renderBlogCard).join('');
+                        renderBlogPagination(filtered.length,curr);
+                    }else{
+                        feed.innerHTML=`<p class="no-content-msg text-center py-10">No matches found for "${escapeHtml(query)}"</p>`;
+                        document.getElementById('blog-pagination').innerHTML='';
+                    }
+                }
+            });
+        }
+    }
+
+    function attachGalleryPagination(){
+        document.querySelectorAll('.gallery-page-btn').forEach(btn=>{
+            btn.addEventListener('click',()=>{
+                const p=parseInt(btn.dataset.page);
+                if(!isNaN(p)){
+                    currentPage.gallery=p;
+                    const params=new URLSearchParams(window.location.search);
+                    params.set('p',p);
+                    window.history.pushState({},'',window.location.pathname+'?'+params.toString());
+                    document.getElementById('app-content').innerHTML=renderGallery();
+                    attachGalleryPagination();
+                    window.scrollTo({top:0,behavior:'smooth'});
+                }
+            });
+        });
+    }
+
+    function renderHome(){
+        let html='';
+        if(SITE_DATA.homepage)html+=`<div class="content-container prose max-w-none">${marked.parse(SITE_DATA.homepage)}</div>`;
+        const items=SITE_DATA.blog.slice(0,3);
+        if(items.length>0){
+            html+='<div class="mb-4 font-bold text-xs uppercase tracking-widest recent-posts-label">Recent Posts</div>';
+            html+='<div class="space-y-4">'+items.map(renderBlogCard).join('')+'</div>';
+        }
+        if(!items.length&&!SITE_DATA.homepage)html='<p class="no-content-msg text-center py-20">No content yet.</p>';
+        return html;
+    }
+
+    function renderBlogsHtml(){
+        const list=SITE_DATA.blog.slice();
+        const perPage=ITEMS_PER_PAGE.blog;
+        const total=Math.ceil(list.length/perPage);
+        const curr=currentPage.blog>total?1:currentPage.blog;
+        const start=(curr-1)*perPage;
+        const items=list.slice(start,start+perPage);
+        return`
+            <div class="mb-6">
+                <input id="blog-search" class="search-input" placeholder="Search blog titles..." autocomplete="off">
+            </div>
+            <div id="blog-feed" class="space-y-4">
+                ${items.map(renderBlogCard).join('')}
+            </div>
+            <div id="blog-pagination"></div>
+            ${renderBlogPaginationHtml(list.length,curr)}
+        `;
+    }
+
+    function renderBlogPaginationHtml(total,curr){
+        const perPage=ITEMS_PER_PAGE.blog;
+        const pages=Math.ceil(total/perPage);
+        if(pages<=1)return'';
+        let html='<div class="pagination">';
+        html+=`<button class="page-btn" ${curr===1?'disabled':''} onclick="navigateBlog(${curr-1})">‹</button>`;
+        for(let i=1;i<=pages;i++){
+            if(pages>7&&i>3&&i<pages-2&&Math.abs(i-curr)>1)continue;
+            html+=`<button class="page-btn ${i===curr?'active':''}" onclick="navigateBlog(${i})">${i}</button>`;
+        }
+        html+=`<button class="page-btn" ${curr===pages?'disabled':''} onclick="navigateBlog(${curr+1})">›</button>`;
+        html+='</div>';
+        return html;
+    }
+
+    function renderBlogPagination(total,curr){
+        document.getElementById('blog-pagination').innerHTML=renderBlogPaginationHtml(total,curr);
+    }
+
+    function navigateBlog(p){
+        currentPage.blog=p;
+        const params=new URLSearchParams(window.location.search);
+        params.set('p',p);
+        window.history.pushState({},'',window.location.pathname+'?'+params.toString());
+        document.getElementById('app-content').innerHTML=renderBlogsHtml();
+        attachBlogSearch();
+        window.scrollTo({top:0,behavior:'smooth'});
+    }
+
+    function renderGallery(){
+        if(!SITE_DATA.gallery.length)return'<p class="gallery-placeholder text-center py-20">No images yet.</p>';
+        const list=SITE_DATA.gallery.slice();
+        const perPage=ITEMS_PER_PAGE.gallery;
+        const total=Math.ceil(list.length/perPage);
+        const curr=currentPage.gallery>total?1:currentPage.gallery;
+        const start=(curr-1)*perPage;
+        const items=list.slice(start,start+perPage);
+        let html=`<div class="grid grid-cols-3 gap-1 md:gap-2">${items.map(img=>`
+            <div class="cursor-pointer transition hover:opacity-90" onclick="openPost('${img.id}')">
+                <img src="${img.url}" class="aspect-box w-full block" onerror="this.src='https://placehold.co/400x400?text=404'">
+            </div>`).join('')}</div>`;
+        if(total>1){
+            html+='<div class="pagination">';
+            html+=`<button class="page-btn gallery-page-btn" data-page="${curr-1}" ${curr===1?'disabled':''}>‹</button>`;
+            for(let i=1;i<=total;i++){
+                if(total>7&&i>3&&i<total-2&&Math.abs(i-curr)>1)continue;
+                html+=`<button class="page-btn gallery-page-btn ${i===curr?'active':''}" data-page="${i}">${i}</button>`;
+            }
+            html+=`<button class="page-btn gallery-page-btn" data-page="${curr+1}" ${curr===total?'disabled':''}>›</button>`;
+            html+='</div>';
+        }
+        return html;
+    }
+
+    function renderTabHtml(tab){
+        return`<div class="content-container prose max-w-none">${marked.parse(tab.content)}</div>`;
+    }
+
+    function renderBlogCard(item){
+        const avatarSrc=document.getElementById('ui-avatar').src||'';
+        const avatarDisplay=avatarSrc?`<img src="${avatarSrc}" class="w-8 h-8 rounded-full">`:`<div class="w-8 h-8 rounded-full bg-slate-200"></div>`;
+        const excerpt=extractExcerpt(item.content);
+        return`
+            <div class="feed-card" onclick="openPost('${item.id}')">
+                <div class="flex gap-2 items-center mb-3">
+                    ${avatarDisplay}
+                    <div class="font-bold text-[13px]">${escapeHtml(SITE_DATA.profile.name)}</div>
+                </div>
+                <h3 class="text-xl font-extrabold tracking-tight mb-2">${escapeHtml(item.title)}</h3>
+                <p class="blog-card-excerpt text-sm leading-relaxed">${escapeHtml(excerpt)}</p>
+            </div>
+        `;
+    }
+
+    function showStandalone(id){
+        document.getElementById('main-layout').classList.add('hidden');
+        document.getElementById('standalone-container').classList.remove('hidden');
+
+        const item=[...SITE_DATA.blog,...SITE_DATA.gallery].find(x=>x.id===id);
+        const container=document.getElementById('standalone-container');
+        if(!item){container.innerHTML='<a href="?" class="text-[11px] font-black uppercase back-link">← BACK</a>';return;}
+
+        if(item.url){
+            container.innerHTML=`
+                <nav class="mb-8"><a href="?" class="text-[11px] font-black uppercase back-link">← EXIT</a></nav>
+                <img src="${item.url}" class="w-full h-auto rounded-lg shadow-xl" onerror="this.src='https://placehold.co/800x800?text=404'">
+                ${item.caption?`<p class="gallery-caption mt-6 text-center italic">${escapeHtml(item.caption)}</p>`:''}
+            `;
+            return;
+        }
+
+        const html=marked.parse(item.content||'');
+        const avatarSrc=document.getElementById('ui-avatar').src||'';
+        const avatarDisplay=avatarSrc?`<img src="${avatarSrc}" alt="avatar">`:`<div style="width:56px;height:56px;border-radius:999px;background:#e2e8f0"></div>`;
+
+        container.innerHTML=`
+            <nav class="mb-8"><a href="?" class="text-[11px] font-black uppercase back-link">← EXIT</a></nav>
+            <div class="author-row">
+                ${avatarDisplay}
+                <div class="author-meta">
+                    <div class="author-name">${escapeHtml(SITE_DATA.profile.name)}</div>
+                    <div class="author-status">${escapeHtml(SITE_DATA.profile.status||'')}</div>
+                </div>
+            </div>
+            <article class="prose max-w-none">${html}</article>
+        `;
+    }
+
+    function extractExcerpt(md){
+        const text=md.replace(/^#.+$/m,'').trim();
+        const firstPara=text.split('\n\n')[0]||'';
+        return firstPara.substring(0,180)+(firstPara.length>180?'...':'');
+    }
+
+    function escapeHtml(text){const d=document.createElement('div');d.textContent=text||'';return d.innerHTML;}
+    function openPost(id){const params=new URLSearchParams(window.location.search);params.set('view','standalone');params.set('id',id);window.history.pushState({},'',window.location.pathname+'?'+params.toString());render();}
+    window.addEventListener('popstate',render);
+    </script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+{
+  "name": "John Doe",
+  "status": "Doing average things.",
+  "bio": "Your average guy on the internet.",
+  "details": [
+      "Developer",
+      "Average",
+      "Based in NYC",
+      {
+        "text": "GitHub",
+        "url": "https://github.com/"
+      }
+  ],
+  "avatar": "content/avatar.jpg",
+  "banner": "content/banner.jpg",
+  "background": "content/bg.jpg",
+  "theme": {
+    "primary": "#f1f5f9",
+    "secondary": "#A0A4BB",
+    "accent": "#4BF838",
+    "bgMain": "#0f172a",
+    "bgCard": "#3A3A3D",
+    "bgSubtle": "#252525",
+    "border": "#000000",
+    "font": "'Arial', monospace"
+  },
+  "badges": [
+    {
+        "label": "Developer",
+        "bg": "#345AA6",
+        "text": "#7dd3fc"
+    },
+    {
+        "label": "Designer",
+        "bg": "#3F8C2C",
+        "text": "#D6FFC8"
+    }
+  ],
+  "sidebarCards": [
+    {
+      "title": "Interests",
+      "content": "Game Dev",
+      "bg": "#547256",
+      "text": "#E1FFD8",
+      "border": "#1B1C1B"
+    }
+  ],
+  "homepageFile": "content/homepage.md",
+  "galleryFile": "content/gallery.md",
+  "tabs": [
+    { 
+      "id": "tab-1",
+      "label": "CUSTOM",
+      "file": "content/tabs/tab-1.md"
+    },
+    { 
+      "id": "tab-2",
+      "label": "CUSTOM 2"
+    }
+  ],
+  "blogPosts": [
+    "content/blog/post-3.md",
+    "content/blog/post-1.md",
+    "content/blog/post-2.md"
+  ]
+}

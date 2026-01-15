@@ -1,0 +1,3 @@
+https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapers.com%2Fimages%2Fhd%2Fjurassic-park-entrance-z2qbdia0eosfum09.jpg&f=1&nofb=1&ipt=a4bea100c9c7dbd9c5d9cf035ba76786896c2a57b2eba14b5b4e218a677cce6c | First image caption
+https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapercave.com%2Fwp%2Fwp2203659.jpg&f=1&nofb=1&ipt=0db02aa27426d8a7461f58dd5f045aec17537fae5508063b848b700d4f256ca1 | Second image caption
+https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic0.gamerantimages.com%2Fwordpress%2Fwp-content%2Fuploads%2F2025%2F02%2Findiana-jones-great-circle-key-art.jpg&f=1&nofb=1&ipt=c22ba71a5321a0b2ca1174466048dec15605f8fed962c2d20b3a5c63e54cae91 | Third image caption
