@@ -3,7 +3,7 @@ Static HTML template that turns into a complete personal website. No build tools
 
 ## Quick Start
 
-1. Download `index.html` and create this folder structure:
+1. Download entire repository or replicate this file structure:
 ```
 your-site/
 ├── index.html
